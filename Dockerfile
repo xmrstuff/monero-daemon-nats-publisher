@@ -1,6 +1,6 @@
 FROM golang:buster as go_builder
 
-ARG publisher_url=https://github.com:xmrstuff/monero-nats-publisher
+ARG publisher_url=https://github.com/xmrstuff/monero-nats-publisher
 
 WORKDIR /home
 

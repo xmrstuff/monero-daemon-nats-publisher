@@ -1,6 +1,6 @@
 FROM golang:buster as go_builder
 
-ARG publisher_url=https://github.com:xmrstuff/monero-nats-publisher
+ARG publisher_url=https://github.com/xmrstuff/monero-nats-publisher
 
 WORKDIR /home
 
@@ -28,14 +28,13 @@ RUN tar -xvjf monero.tar.bz2 --strip-component=1
 
 FROM debian:stable-slim
 
-COPY --from=monero_builder /tmp/monero-wallet-rpc /usr/bin/monerod
+COPY --from=monero_builder /tmp/monerod /usr/bin/monerod
 
 COPY --from=go_builder /home/publisher /usr/bin/publisher
 
 VOLUME ["/monero"]
 
-ENTRYPOINT [ \
-    "/usr/bin/monerod", \
-    "--non-interactive", \
-    "--block-notify=/usr/bin/publisher tx %s" \
-    ]
+CMD /usr/bin/publisher && \
+    /usr/bin/monerod \
+    --non-interactive \
+    --block-notify="/usr/bin/publisher block %s"
